@@ -89,8 +89,9 @@ class TableBuilder implements CanExport
         return $this;
     }
 
-    public function orderBy(string $orderBy): self
+    public function orderBy(string $orderBy, array $bindings): self
     {
+        $this->config->setOrderByBindings($bindings);
         $this->config->setOrderBy($orderBy);
         return $this;
     }
@@ -113,9 +114,10 @@ class TableBuilder implements CanExport
         return $this;
     }
 
-    public function filter(string $whereExpression): self
+    public function filter(string $whereExpression, array $bindings = []): self
     {
         $this->config->setWhereExpression($whereExpression);
+        $this->config->setWhereBindings($bindings);
         return $this;
     }
 

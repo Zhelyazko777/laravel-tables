@@ -10,6 +10,7 @@ use Zhelyazko777\Tables\Builders\Models\TableConfig;
 use Zhelyazko777\Tables\Models\TableData;
 use Zhelyazko777\Tables\Resolvers\Contracts\TableResolverInterface;
 use Illuminate\Database\Query\Builder;
+use function Psy\bin;
 
 class TableResolver implements TableResolverInterface
 {
@@ -58,12 +59,12 @@ class TableResolver implements TableResolverInterface
         $queryBuilder = \DB::table($mainTable);
         $whereExpression = $this->escapeWhere($config->getWhereExpression());
         if (!is_null($whereExpression)) {
-            $queryBuilder->whereRaw($whereExpression);
+            $queryBuilder->whereRaw($whereExpression, $config->getWhereBindings());
         }
         $this->addSoftDeleteFilter($mainTable, $config->getIncludedTrashedTables(), $queryBuilder);
         $this->addSelects($queryBuilder, $mainTable, $config->getColumns());
         $this->addJoins($queryBuilder, $config->getJoins(), $config->getIncludedTrashedTables());
-        $this->addOrderBy($queryBuilder, $mainTable, $config->getOrderBy());
+        $this->addOrderBy($queryBuilder, $mainTable, $config->getOrderBy(), $config->getOrderByBindings());
 
         return $queryBuilder;
     }
@@ -83,26 +84,29 @@ class TableResolver implements TableResolverInterface
 
     /**
      * @param  string  $table
-     * @param  array<string>  $includedTrashedTable
+     * @param  array<string>  $includedTrashedTables
      * @param  Builder  $query
      */
-    private function addSoftDeleteFilter(string $table, array $includedTrashedTable, Builder $query): void
+    private function addSoftDeleteFilter(string $table, array $includedTrashedTables, Builder $query): void
     {
         if (in_array($table, $this->tablesWithSoftDelete) &&
-            !(in_array($table, $includedTrashedTable) || in_array('*', $includedTrashedTable))
+            !(in_array($table, $includedTrashedTables) || in_array('*', $includedTrashedTables))
         ) {
             $query->whereNull("$table.deleted_at");
         }
     }
 
-    private function addOrderBy(Builder $queryBuilder, string $mainTable, ?string $orderBy): void
+    private function addOrderBy(Builder $queryBuilder, string $mainTable, ?string $orderBy, array $bindings): void
     {
         if ($orderBy) {
             $id = \request()->query('itemId');
             if (!is_null($id) && !is_array($id)) {
-                $queryBuilder->orderByRaw("FIELD($mainTable.id, :id) DESC," . $orderBy, [ 'id' => $id ]);
+                $queryBuilder->orderByRaw(
+                    "FIELD($mainTable.id, :id) DESC," . $orderBy,
+                    array_merge([ 'id' => $id ], $bindings)
+                );
             } else {
-                $queryBuilder->orderByRaw($orderBy);
+                $queryBuilder->orderByRaw($orderBy, $bindings);
             }
         }
     }
@@ -133,9 +137,9 @@ class TableResolver implements TableResolverInterface
     /**
      * @param  Builder  $queryBuilder
      * @param  array<BaseJoin>  $joins
-     * @param  array<string>  $includedTrashedTable
+     * @param  array<string>  $includedTrashedTables
      */
-    private function addJoins(Builder $queryBuilder, array $joins, array $includedTrashedTable): void
+    private function addJoins(Builder $queryBuilder, array $joins, array $includedTrashedTables): void
     {
         foreach ($joins as $join)
         {
@@ -155,41 +159,9 @@ class TableResolver implements TableResolverInterface
                     $join->getSecondOperand()
                 );
             }
-            $this->addSoftDeleteFilter($join->getTable(), $includedTrashedTable, $queryBuilder);
-        }
-//        $this->traverseJoins($joins, function ($tableToJoin, $condition) use ($queryBuilder, $includedTrashedTable) {
-//            $queryBuilder->join($tableToJoin, $condition[0], $condition[1], $condition[2]);
-//            $this->addSoftDeleteFilter($tableToJoin, $includedTrashedTable, $queryBuilder);
-//        });
-    }
-
-//    /**
-//     * @param  Builder  $queryBuilder
-//     * @param  array<mixed>  $joins
-//     * @param  array<string>  $includedTrashedTable
-//     */
-//    private function addLeftJoins(Builder $queryBuilder, array $joins, array $includedTrashedTable): void
-//    {
-//        $this->traverseJoins($joins, function ($tableToJoin, $condition) use ($queryBuilder, $includedTrashedTable) {
-//            $queryBuilder->leftJoin($tableToJoin, $condition[0], $condition[1], $condition[2]);
-//            $this->addSoftDeleteFilter($tableToJoin, $includedTrashedTable, $queryBuilder);
-//        });
-//    }
-
-    /**
-     * @param  array<string, mixed>  $joins
-     * @param  callable  $callback
-     */
-    private function traverseJoins(array $joins, callable $callback): void
-    {
-        foreach ($joins as $join => $conditions) {
-            $callback(
-                $join,
-                $conditions[0],
-            );
+            $this->addSoftDeleteFilter($join->getTable(), $includedTrashedTables, $queryBuilder);
         }
     }
-
     private function escapeWhere(?string $whereExpression): ?string
     {
         if (is_null($whereExpression)) {

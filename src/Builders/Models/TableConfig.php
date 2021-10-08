@@ -44,6 +44,12 @@ class TableConfig
 
     private ?string $whereExpression = null;
 
+    /** @var array<string, mixed> */
+    private array $whereBindings = [];
+
+    /** @var array<string, mixed> */
+    private array $orderByBindings = [];
+
     /**
      * @return string[]
      */
@@ -239,6 +245,42 @@ class TableConfig
     public function setWhereExpression(string $whereExpression): TableConfig
     {
         $this->whereExpression = $whereExpression;
+        return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getWhereBindings(): array
+    {
+        return $this->whereBindings;
+    }
+
+    /**
+     * @param  array<string, mixed>  $whereBindings
+     * @return TableConfig
+     */
+    public function setWhereBindings(array $whereBindings): TableConfig
+    {
+        $this->whereBindings = $whereBindings;
+        return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getOrderByBindings(): array
+    {
+        return $this->orderByBindings;
+    }
+
+    /**
+     * @param  array<string, mixed>  $orderByBindings
+     * @return TableConfig
+     */
+    public function setOrderByBindings(array $orderByBindings): TableConfig
+    {
+        $this->orderByBindings = $orderByBindings;
         return $this;
     }
 }
