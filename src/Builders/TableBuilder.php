@@ -89,7 +89,7 @@ class TableBuilder implements CanExport
         return $this;
     }
 
-    public function orderBy(string $orderBy, array $bindings): self
+    public function orderBy(string $orderBy, array $bindings = []): self
     {
         $this->config->setOrderByBindings($bindings);
         $this->config->setOrderBy($orderBy);
