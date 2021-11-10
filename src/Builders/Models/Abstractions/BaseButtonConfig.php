@@ -23,7 +23,11 @@ class BaseButtonConfig implements \JsonSerializable
 
     private string $class = '';
 
-    private string $attrs = '';
+    /**
+     * HTML attributes
+     * @var array<string, string>
+     */
+    private array $attrs = [];
 
     /**
      * Array with JS subscriptions which use the button as target element
@@ -50,18 +54,18 @@ class BaseButtonConfig implements \JsonSerializable
     }
 
     /**
-     * @return string
+     * @return array<string, string>
      */
-    public function getAttrs(): string
+    public function getAttrs(): array
     {
         return $this->attrs;
     }
 
     /**
-     * @param  string  $attrs
+     * @param  array<string, string>  $attrs
      * @return BaseButtonConfig
      */
-    public function setAttrs(string $attrs): BaseButtonConfig
+    public function setAttrs(array $attrs): BaseButtonConfig
     {
         $this->attrs = $attrs;
         return $this;

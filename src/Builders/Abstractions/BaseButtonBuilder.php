@@ -21,7 +21,12 @@ abstract class BaseButtonBuilder implements CanExport
         return $this;
     }
 
-    public function withAttrs(string $attrs): static
+    /**
+     * Add HTML attributes to the button
+     * @param  array<string, string>  $attrs
+     * @return $this
+     */
+    public function withAttrs(array $attrs): static
     {
         $this->config->setAttrs($attrs);
         return $this;
