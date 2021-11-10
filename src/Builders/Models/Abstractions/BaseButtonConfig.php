@@ -23,6 +23,50 @@ class BaseButtonConfig implements \JsonSerializable
 
     private string $class = '';
 
+    private string $attrs = '';
+
+    /**
+     * Array with JS subscriptions which use the button as target element
+     * @var array<string, string>
+     */
+    private array $subscriptions = [];
+
+    /**
+     * @return string[]
+     */
+    public function getSubscriptions(): array
+    {
+        return $this->subscriptions;
+    }
+
+    /**
+     * @param  string[]  $subscriptions
+     * @return BaseButtonConfig
+     */
+    public function setSubscriptions(array $subscriptions): BaseButtonConfig
+    {
+        $this->subscriptions = $subscriptions;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAttrs(): string
+    {
+        return $this->attrs;
+    }
+
+    /**
+     * @param  string  $attrs
+     * @return BaseButtonConfig
+     */
+    public function setAttrs(string $attrs): BaseButtonConfig
+    {
+        $this->attrs = $attrs;
+        return $this;
+    }
+
     public function getType(): string
     {
         return lcfirst(str_replace('ButtonConfig', '', (new ReflectionClass($this))->getShortName()));

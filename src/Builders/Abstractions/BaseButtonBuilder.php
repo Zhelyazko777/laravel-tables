@@ -10,6 +10,23 @@ abstract class BaseButtonBuilder implements CanExport
 {
     protected BaseButtonConfig $config;
 
+    /**
+     * Add JS subscriptions to the button
+     * @param  array<string, string>  $subscriptions
+     * @return BaseButtonBuilder
+     */
+    public function addSubscriptions(array $subscriptions): static
+    {
+        $this->config->setSubscriptions($subscriptions);
+        return $this;
+    }
+
+    public function withAttrs(string $attrs): static
+    {
+        $this->config->setAttrs($attrs);
+        return $this;
+    }
+
     public function withText(string $text): static
     {
         $this->config->setText($text);
