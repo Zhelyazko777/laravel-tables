@@ -25,7 +25,7 @@ class TableData implements \JsonSerializable
      */
     private array $buttons = [];
 
-    private LengthAwarePaginator $paginator;
+    private ?LengthAwarePaginator $paginator = null;
 
     private string $noItemsMessage;
 
@@ -104,18 +104,18 @@ class TableData implements \JsonSerializable
     }
 
     /**
-     * @return LengthAwarePaginator
+     * @return LengthAwarePaginator|null
      */
-    public function getPaginator(): LengthAwarePaginator
+    public function getPaginator(): ?LengthAwarePaginator
     {
         return $this->paginator;
     }
 
     /**
-     * @param  LengthAwarePaginator  $paginator
+     * @param  LengthAwarePaginator|null  $paginator
      * @return TableData
      */
-    public function setPaginator(LengthAwarePaginator $paginator): TableData
+    public function setPaginator(?LengthAwarePaginator $paginator): TableData
     {
         $this->paginator = $paginator;
         return $this;
