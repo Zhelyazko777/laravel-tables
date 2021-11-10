@@ -51,6 +51,20 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    public function addTextButton(callable $callback): self
+    {
+        $builder = new TextButtonBuilder();
+        $callback($builder);
+        $this->config->setButtons(
+            array_merge(
+                $this->config->getButtons(),
+                [$builder->export()],
+            )
+        );
+
+        return $this;
+    }
+
     public function selectColumn(callable $callback): self
     {
         $builder = new SelectColumnBuilder();
