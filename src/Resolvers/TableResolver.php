@@ -2,15 +2,17 @@
 
 namespace Zhelyazko777\Tables\Resolvers;
 
+use Zhelyazko777\LaravelSimpleMapper\SimpleMapper;
+use Zhelyazko777\Tables\Builders\Models\Abstractions\BaseButtonConfig;
 use Zhelyazko777\Tables\Builders\Models\Abstractions\BaseJoin;
 use Zhelyazko777\Tables\Builders\Models\InnerJoin;
 use Zhelyazko777\Tables\Builders\Models\LeftJoin;
-use Zhelyazko777\Tables\Builders\Models\SelectColumnConfig;
+use Zhelyazko777\Tables\Builders\Models\ColumnConfig;
 use Zhelyazko777\Tables\Builders\Models\TableConfig;
-use Zhelyazko777\Tables\Models\TableData;
 use Zhelyazko777\Tables\Resolvers\Contracts\TableResolverInterface;
 use Illuminate\Database\Query\Builder;
-use function Psy\bin;
+use Zhelyazko777\Tables\Resolvers\Models\ResolvedColumn;
+use Zhelyazko777\Tables\Resolvers\Models\ResolvedTable;
 
 class TableResolver implements TableResolverInterface
 {
@@ -19,34 +21,82 @@ class TableResolver implements TableResolverInterface
      */
     private array $tablesWithSoftDelete = [];
 
-    public function resolve(TableConfig $config): TableData
+    public function resolve(TableConfig $config): ResolvedTable
     {
         $this->fetchSoftDeletableTables();
 
-        $tableData = new TableData();
-        $columnsToRender = array_filter($config->getColumns(), fn ($c) => !$c->getIsHidden());
-        $tableData
-            ->setColumns($columnsToRender)
-            ->setButtons($config->getButtons())
-            ->setNoItemsMessage($config->getNoItemsMessage())
-            ->setIsExpandable($config->getIsExpandable());
+        $resolvedTable = new ResolvedTable();
+        $resolvedTable->setNoItemsMessage($config->getNoItemsMessage());
+        $resolvedTable->setIsExpandable($config->getIsExpandable());
+        $this->addColumns($resolvedTable, $config->getColumns());
+        $this->addButtons($resolvedTable, $config->getButtons());
+        $this->addRows($resolvedTable, $config);
 
+        return $resolvedTable;
+    }
 
+    /**
+     * @param  ResolvedTable  $table
+     * @param  TableConfig  $config
+     */
+    private function addRows(ResolvedTable $table, TableConfig $config): void
+    {
         $query = $this->buildDbQuery($config);
-
         $itemsPerPage = $config->getItemsPerPage();
+
+        $rows = null;
         if ($itemsPerPage !== null) {
             $paginator = $query->paginate($itemsPerPage);
-            $resultItems = $paginator->items();
-            $tableData->setPaginator($paginator);
+            $rows = $paginator->items();
+            $table->setPaginator($paginator);
         } else {
-            $resultItems = $query
-                ->get()
-                ->toArray();
+            $rows = $query->get()->toArray();
         }
 
-        $tableData->setRows($resultItems);
-        return $tableData;
+        $table->setRows($rows);
+    }
+
+    /**
+     * @param  ResolvedTable  $table
+     * @param  array<BaseButtonConfig>  $buttonsConfig
+     */
+    private function addButtons(ResolvedTable $table, array $buttonsConfig): void
+    {
+        $table
+            ->setButtons(array_map(function (BaseButtonConfig $button) {
+                $btnType = 'Zhelyazko777\Tables\Resolvers\Models\Resolved' . ucfirst($button->getType()) . 'Button';
+                return  SimpleMapper::map($button, new $btnType);
+            }, $buttonsConfig));
+    }
+
+    /**
+     * @param  ResolvedTable  $table
+     * @param  array<ColumnConfig>  $columnsConfig
+     */
+    private function addColumns(ResolvedTable $table, array $columnsConfig): void
+    {
+        $resolvedColumns = [];
+
+        foreach ($columnsConfig as $column)
+        {
+            if (!$column->getIsHidden()) {
+                $resolvedColumns[] = SimpleMapper::map(
+                    $column,
+                    new ResolvedColumn,
+                    [
+                        'name' => function (ColumnConfig $source, ResolvedColumn $destination) {
+                            if (!is_null($source->getAlias())) {
+                                $destination->setName($source->getAlias());
+                            } else {
+                                $destination->setName($source->getName());
+                            }
+                        },
+                    ]
+                );
+            }
+        }
+
+        $table->setColumns($resolvedColumns);
     }
 
     /**
@@ -114,7 +164,7 @@ class TableResolver implements TableResolverInterface
     /**
      * @param  Builder  $queryBuilder
      * @param  string  $table
-     * @param  array<SelectColumnConfig>  $selectColumns
+     * @param  array<ColumnConfig>  $selectColumns
      */
     private function addSelects(Builder $queryBuilder, string $table, array $selectColumns): void
     {
@@ -123,13 +173,13 @@ class TableResolver implements TableResolverInterface
     }
 
     /**
-     * @param  array<SelectColumnConfig>  $selectColumns
+     * @param  array<ColumnConfig>  $selectColumns
      * @return string
      */
     private function mapSelectColumns(array $selectColumns): string
     {
         return collect($selectColumns)
-            ->map(fn(SelectColumnConfig $col) => $col->getName() . (is_null($col->getAlias()) ? '' : " as " . "'" . $col->getAlias(). "'"))
+            ->map(fn(ColumnConfig $col) => $col->getName() . " as " . (is_null($col->getAlias()) ? "'" . $col->getName() . "'" :  "'" . $col->getAlias(). "'"))
             ->values()
             ->implode(', ');
     }

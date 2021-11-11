@@ -1,28 +1,22 @@
 <?php
 
-namespace Zhelyazko777\Tables\Models;
+namespace Zhelyazko777\Tables\Resolvers\Models;
 
-use Zhelyazko777\Tables\Builders\Models\SelectColumnConfig;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Zhelyazko777\Tables\Resolvers\Models\Abstractions\BaseResolvedButton;
 use Zhelyazko777\Utilities\Exportable;
 
-class TableData implements \JsonSerializable
+class ResolvedTable implements \JsonSerializable
 {
     use Exportable;
 
-    /**
-     * @var array<SelectColumnConfig>
-     */
+    /** @var array<ResolvedColumn> */
     private array $columns = [];
 
-    /**
-     * @var array<string>
-     */
+    /** @var array<string> */
     private array $rows = [];
 
-    /**
-     * @var array<mixed>
-     */
+    /** @var array<BaseResolvedButton> */
     private array $buttons = [];
 
     private ?LengthAwarePaginator $paginator = null;
@@ -41,16 +35,16 @@ class TableData implements \JsonSerializable
 
     /**
      * @param  mixed  $noItemsMessage
-     * @return TableData
+     * @return self
      */
-    public function setNoItemsMessage($noItemsMessage): TableData
+    public function setNoItemsMessage($noItemsMessage): self
     {
         $this->noItemsMessage = $noItemsMessage;
         return $this;
     }
 
     /**
-     * @return array<mixed>
+     * @return array<BaseResolvedButton>
      */
     public function getButtons(): array
     {
@@ -58,17 +52,17 @@ class TableData implements \JsonSerializable
     }
 
     /**
-     * @param mixed[]  $buttons
-     * @return TableData
+     * @param array<BaseResolvedButton>  $buttons
+     * @return self
      */
-    public function setButtons(array $buttons): TableData
+    public function setButtons(array $buttons): self
     {
         $this->buttons = $buttons;
         return $this;
     }
 
     /**
-     * @return array<SelectColumnConfig>
+     * @return array<ResolvedColumn>
      */
     public function getColumns(): array
     {
@@ -76,10 +70,10 @@ class TableData implements \JsonSerializable
     }
 
     /**
-     * @param  array<SelectColumnConfig>  $columns
-     * @return TableData
+     * @param  array<ResolvedColumn>  $columns
+     * @return self
      */
-    public function setColumns(array $columns): TableData
+    public function setColumns(array $columns): self
     {
         $this->columns = $columns;
         return $this;
@@ -95,9 +89,9 @@ class TableData implements \JsonSerializable
 
     /**
      * @param array<string> $rows
-     * @return TableData
+     * @return self
      */
-    public function setRows(array $rows): TableData
+    public function setRows(array $rows): self
     {
         $this->rows = $rows;
         return $this;
@@ -113,9 +107,9 @@ class TableData implements \JsonSerializable
 
     /**
      * @param  LengthAwarePaginator|null  $paginator
-     * @return TableData
+     * @return self
      */
-    public function setPaginator(?LengthAwarePaginator $paginator): TableData
+    public function setPaginator(?LengthAwarePaginator $paginator): self
     {
         $this->paginator = $paginator;
         return $this;
@@ -131,9 +125,9 @@ class TableData implements \JsonSerializable
 
     /**
      * @param  bool  $isExpandable
-     * @return TableData
+     * @return self
      */
-    public function setIsExpandable(bool $isExpandable): TableData
+    public function setIsExpandable(bool $isExpandable): self
     {
         $this->isExpandable = $isExpandable;
         return $this;

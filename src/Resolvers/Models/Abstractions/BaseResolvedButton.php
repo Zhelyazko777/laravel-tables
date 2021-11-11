@@ -1,14 +1,17 @@
 <?php
 
-namespace Zhelyazko777\Tables\Builders\Models\Abstractions;
+namespace Zhelyazko777\Tables\Resolvers\Models\Abstractions;
 
 use Zhelyazko777\Tables\Builders\Models\ConditionConfig;
-use ReflectionClass;
 use Zhelyazko777\Utilities\Exportable;
 
-class BaseButtonConfig
+class BaseResolvedButton implements \JsonSerializable
 {
-    /** @var array<string, mixed> */
+    use Exportable;
+
+    /**
+     * @var array<string, mixed>
+     */
     private array $disableConditions = [];
 
     private string $text = '';
@@ -18,6 +21,8 @@ class BaseButtonConfig
     private string $tooltip = '';
 
     private string $class = '';
+
+    private string $type = '';
 
     /**
      * HTML attributes
@@ -41,9 +46,9 @@ class BaseButtonConfig
 
     /**
      * @param  string[]  $subscriptions
-     * @return BaseButtonConfig
+     * @return self
      */
-    public function setSubscriptions(array $subscriptions): BaseButtonConfig
+    public function setSubscriptions(array $subscriptions): self
     {
         $this->subscriptions = $subscriptions;
         return $this;
@@ -59,17 +64,23 @@ class BaseButtonConfig
 
     /**
      * @param  array<string, string>  $attrs
-     * @return BaseButtonConfig
+     * @return self
      */
-    public function setAttrs(array $attrs): BaseButtonConfig
+    public function setAttrs(array $attrs): self
     {
         $this->attrs = $attrs;
         return $this;
     }
 
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
     public function getType(): string
     {
-        return lcfirst(str_replace('ButtonConfig', '', (new ReflectionClass($this))->getShortName()));
+        return $this->type;
     }
 
     /**
@@ -82,9 +93,9 @@ class BaseButtonConfig
 
     /**
      * @param  array<ConditionConfig>  $disableConditions
-     * @return BaseButtonConfig
+     * @return self
      */
-    public function setDisableConditions(array $disableConditions): BaseButtonConfig
+    public function setDisableConditions(array $disableConditions): self
     {
         $this->disableConditions = $disableConditions;
         return $this;
@@ -100,9 +111,9 @@ class BaseButtonConfig
 
     /**
      * @param  string  $text
-     * @return BaseButtonConfig
+     * @return self
      */
-    public function setText(string $text): BaseButtonConfig
+    public function setText(string $text): self
     {
         $this->text = $text;
         return $this;
@@ -118,9 +129,9 @@ class BaseButtonConfig
 
     /**
      * @param  string  $icon
-     * @return BaseButtonConfig
+     * @return self
      */
-    public function setIcon(string $icon): BaseButtonConfig
+    public function setIcon(string $icon): self
     {
         $this->icon = $icon;
         return $this;
@@ -136,9 +147,9 @@ class BaseButtonConfig
 
     /**
      * @param  string  $tooltip
-     * @return BaseButtonConfig
+     * @return self
      */
-    public function setTooltip(string $tooltip): BaseButtonConfig
+    public function setTooltip(string $tooltip): self
     {
         $this->tooltip = $tooltip;
         return $this;
@@ -154,9 +165,9 @@ class BaseButtonConfig
 
     /**
      * @param  string  $class
-     * @return BaseButtonConfig
+     * @return self
      */
-    public function setClass(string $class): BaseButtonConfig
+    public function setClass(string $class): self
     {
         $this->class = $class;
         return $this;

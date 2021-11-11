@@ -3,15 +3,15 @@
 namespace Zhelyazko777\Tables\Builders;
 
 use Zhelyazko777\Utilities\Contracts\CanExport;
-use Zhelyazko777\Tables\Builders\Models\SelectColumnConfig;
+use Zhelyazko777\Tables\Builders\Models\ColumnConfig;
 
 class ColumnBuilder implements CanExport
 {
-    private SelectColumnConfig $config;
+    private ColumnConfig $config;
 
     public function __construct()
     {
-        $this->config = new SelectColumnConfig();
+        $this->config = new ColumnConfig();
     }
 
     public function select(string $column): self
@@ -106,7 +106,7 @@ class ColumnBuilder implements CanExport
         return $this;
     }
 
-    public function export(): SelectColumnConfig
+    public function export(): ColumnConfig
     {
         return $this->config;
     }

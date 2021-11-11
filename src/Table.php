@@ -4,12 +4,12 @@ namespace Zhelyazko777\Tables;
 
 use Zhelyazko777\Tables\Builders\TableBuilder;
 use Zhelyazko777\Tables\Contracts\TableConfigurationInterface;
-use Zhelyazko777\Tables\Models\TableData;
 use Zhelyazko777\Tables\Resolvers\Contracts\TableResolverInterface;
+use Zhelyazko777\Tables\Resolvers\Models\ResolvedTable;
 
 class Table
 {
-    public function create(TableConfigurationInterface $table): TableData
+    public function create(TableConfigurationInterface $table): ResolvedTable
     {
         $resolver = app()->get(TableResolverInterface::class);
         $builder = new TableBuilder();

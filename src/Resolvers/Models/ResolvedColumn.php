@@ -1,16 +1,14 @@
 <?php
 
-namespace Zhelyazko777\Tables\Builders\Models;
+namespace Zhelyazko777\Tables\Resolvers\Models;
 
 use Zhelyazko777\Utilities\Exportable;
 
-class SelectColumnConfig implements \JsonSerializable
+class ResolvedColumn implements \JsonSerializable
 {
     use Exportable;
 
     private string $name = '';
-
-    private ?string $alias = null;
 
     private string $uiName = '';
 
@@ -48,9 +46,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  string  $uiName
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setUiName(string $uiName): SelectColumnConfig
+    public function setUiName(string $uiName): self
     {
         $this->uiName = $uiName;
         return $this;
@@ -66,9 +64,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  string  $tooltip
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setTooltip(string $tooltip): SelectColumnConfig
+    public function setTooltip(string $tooltip): self
     {
         $this->tooltip = $tooltip;
         return $this;
@@ -84,9 +82,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  bool  $showTooltipIcon
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setShowTooltipIcon(bool $showTooltipIcon): SelectColumnConfig
+    public function setShowTooltipIcon(bool $showTooltipIcon): self
     {
         $this->showTooltipIcon = $showTooltipIcon;
         return $this;
@@ -103,9 +101,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  array<string, mixed>  $removeTooltipConditions
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setRemoveTooltipConditions(array $removeTooltipConditions): SelectColumnConfig
+    public function setRemoveTooltipConditions(array $removeTooltipConditions): self
     {
         $this->removeTooltipConditions = $removeTooltipConditions;
         return $this;
@@ -121,9 +119,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  array<string, mixed>  $clickableConditions
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setClickableConditions(array $clickableConditions): SelectColumnConfig
+    public function setClickableConditions(array $clickableConditions): self
     {
         $this->clickableConditions = $clickableConditions;
         return $this;
@@ -139,29 +137,11 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  string  $name
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setName(string $name): SelectColumnConfig
+    public function setName(string $name): self
     {
         $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAlias(): ?string
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @param  string|null  $alias
-     * @return SelectColumnConfig
-     */
-    public function setAlias(?string $alias): SelectColumnConfig
-    {
-        $this->alias = $alias;
         return $this;
     }
 
@@ -175,9 +155,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  bool  $isHidden
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setIsHidden(bool $isHidden): SelectColumnConfig
+    public function setIsHidden(bool $isHidden): self
     {
         $this->isHidden = $isHidden;
         return $this;
@@ -193,9 +173,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  bool  $isHiddenOnMobile
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setIsHiddenOnMobile(bool $isHiddenOnMobile): SelectColumnConfig
+    public function setIsHiddenOnMobile(bool $isHiddenOnMobile): self
     {
         $this->isHiddenOnMobile = $isHiddenOnMobile;
         return $this;
@@ -211,9 +191,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  bool  $isHiddenOnDesktop
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setIsHiddenOnDesktop(bool $isHiddenOnDesktop): SelectColumnConfig
+    public function setIsHiddenOnDesktop(bool $isHiddenOnDesktop): self
     {
         $this->isHiddenOnDesktop = $isHiddenOnDesktop;
         return $this;
@@ -229,9 +209,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  bool  $isPhone
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setIsPhone(bool $isPhone): SelectColumnConfig
+    public function setIsPhone(bool $isPhone): self
     {
         $this->isPhone = $isPhone;
         return $this;
@@ -247,9 +227,9 @@ class SelectColumnConfig implements \JsonSerializable
 
     /**
      * @param  string  $route
-     * @return SelectColumnConfig
+     * @return self
      */
-    public function setRoute(string $route): SelectColumnConfig
+    public function setRoute(string $route): self
     {
         $this->route = $route;
         return $this;

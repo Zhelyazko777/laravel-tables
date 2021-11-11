@@ -8,7 +8,7 @@ use Zhelyazko777\Tables\Builders\Models\Abstractions\BaseJoin;
 class TableConfig
 {
     /**
-     * @var array<SelectColumnConfig>
+     * @var array<ColumnConfig>
      */
     private array $columns = [];
 
@@ -21,11 +21,6 @@ class TableConfig
      * @var array<string, mixed>
      */
     private array $joins = [];
-
-//    /**
-//     * @var array<string, mixed>
-//     */
-//    private array $leftJoins = [];
 
     /**
      * @var array<string>
@@ -69,7 +64,7 @@ class TableConfig
     }
 
     /**
-     * @return array<SelectColumnConfig>
+     * @return array<ColumnConfig>
      */
     public function getColumns(): array
     {
@@ -77,7 +72,7 @@ class TableConfig
     }
 
     /**
-     * @param  array<SelectColumnConfig>  $columns
+     * @param  array<ColumnConfig>  $columns
      * @return TableConfig
      */
     public function setColumns(array $columns): TableConfig
@@ -121,24 +116,6 @@ class TableConfig
         $this->joins = $joins;
         return $this;
     }
-
-//    /**
-//     * @return array
-//     */
-//    public function getLeftJoins(): array
-//    {
-//        return $this->leftJoins;
-//    }
-//
-//    /**
-//     * @param  array  $leftJoins
-//     * @return TableConfig
-//     */
-//    public function setLeftJoins(array $leftJoins): TableConfig
-//    {
-//        $this->leftJoins = $leftJoins;
-//        return $this;
-//    }
 
     /**
      * @return string
