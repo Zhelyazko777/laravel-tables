@@ -63,10 +63,10 @@ class ResolvedColumn implements \JsonSerializable
     }
 
     /**
-     * @param  string  $tooltip
+     * @param  string|null  $tooltip
      * @return self
      */
-    public function setTooltip(string $tooltip): self
+    public function setTooltip(?string $tooltip): self
     {
         $this->tooltip = $tooltip;
         return $this;
@@ -226,10 +226,10 @@ class ResolvedColumn implements \JsonSerializable
     }
 
     /**
-     * @param  string  $route
+     * @param  string|null  $route
      * @return self
      */
-    public function setRoute(string $route): self
+    public function setRoute(?string $route): self
     {
         $this->route = $route;
         return $this;

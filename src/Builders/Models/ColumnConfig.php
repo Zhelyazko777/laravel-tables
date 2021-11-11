@@ -63,10 +63,10 @@ class ColumnConfig
     }
 
     /**
-     * @param  string  $tooltip
+     * @param  string|null  $tooltip
      * @return ColumnConfig
      */
-    public function setTooltip(string $tooltip): ColumnConfig
+    public function setTooltip(?string $tooltip): ColumnConfig
     {
         $this->tooltip = $tooltip;
         return $this;
@@ -244,10 +244,10 @@ class ColumnConfig
     }
 
     /**
-     * @param  string  $route
+     * @param  string|null  $route
      * @return ColumnConfig
      */
-    public function setRoute(string $route): ColumnConfig
+    public function setRoute(?string $route): ColumnConfig
     {
         $this->route = $route;
         return $this;
