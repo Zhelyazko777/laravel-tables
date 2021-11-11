@@ -2,16 +2,17 @@
 
 namespace Zhelyazko777\Tables\Builders\Models;
 
-
 use Zhelyazko777\Utilities\Exportable;
 
 class SelectColumnConfig implements \JsonSerializable
 {
     use Exportable;
 
-    private string $column = '';
+    private string $name = '';
 
-    private string $uiColumnName = '';
+    private ?string $alias = null;
+
+    private string $uiName = '';
 
     private bool $isHidden = false;
 
@@ -20,8 +21,6 @@ class SelectColumnConfig implements \JsonSerializable
     private bool $isHiddenOnDesktop = false;
 
     private bool $isPhone = false;
-
-    private ?string $name = null;
 
     private ?string $route = null;
 
@@ -38,6 +37,24 @@ class SelectColumnConfig implements \JsonSerializable
     private ?string $tooltip = null;
 
     private bool $showTooltipIcon = false;
+
+    /**
+     * @return string
+     */
+    public function getUiName(): string
+    {
+        return $this->uiName;
+    }
+
+    /**
+     * @param  string  $uiName
+     * @return SelectColumnConfig
+     */
+    public function setUiName(string $uiName): SelectColumnConfig
+    {
+        $this->uiName = $uiName;
+        return $this;
+    }
 
     /**
      * @return string|null
@@ -115,36 +132,36 @@ class SelectColumnConfig implements \JsonSerializable
     /**
      * @return string
      */
-    public function getColumn(): string
+    public function getName(): string
     {
-        return $this->column;
+        return $this->name;
     }
 
     /**
-     * @param  string  $column
+     * @param  string  $name
      * @return SelectColumnConfig
      */
-    public function setColumn(string $column): SelectColumnConfig
+    public function setName(string $name): SelectColumnConfig
     {
-        $this->column = $column;
+        $this->name = $name;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUiColumnName(): string
+    public function getAlias(): ?string
     {
-        return $this->uiColumnName;
+        return $this->alias;
     }
 
     /**
-     * @param  string  $uiColumnName
+     * @param  string|null  $alias
      * @return SelectColumnConfig
      */
-    public function setUiColumnName(string $uiColumnName): SelectColumnConfig
+    public function setAlias(?string $alias): SelectColumnConfig
     {
-        $this->uiColumnName = $uiColumnName;
+        $this->alias = $alias;
         return $this;
     }
 
@@ -217,24 +234,6 @@ class SelectColumnConfig implements \JsonSerializable
     public function setIsPhone(bool $isPhone): SelectColumnConfig
     {
         $this->isPhone = $isPhone;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param  string  $name
-     * @return SelectColumnConfig
-     */
-    public function setName(string $name): SelectColumnConfig
-    {
-        $this->name = $name;
         return $this;
     }
 

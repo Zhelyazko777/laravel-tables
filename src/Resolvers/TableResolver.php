@@ -129,7 +129,7 @@ class TableResolver implements TableResolverInterface
     private function mapSelectColumns(array $selectColumns): string
     {
         return collect($selectColumns)
-            ->map(fn(SelectColumnConfig $col) => $col->getColumn() . " as " . "'" . $col->getUiColumnName(). "'")
+            ->map(fn(SelectColumnConfig $col) => $col->getName() . (is_null($col->getAlias()) ? '' : " as " . "'" . $col->getAlias(). "'"))
             ->values()
             ->implode(', ');
     }

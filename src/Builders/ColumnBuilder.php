@@ -5,7 +5,7 @@ namespace Zhelyazko777\Tables\Builders;
 use Zhelyazko777\Utilities\Contracts\CanExport;
 use Zhelyazko777\Tables\Builders\Models\SelectColumnConfig;
 
-class SelectColumnBuilder implements CanExport
+class ColumnBuilder implements CanExport
 {
     private SelectColumnConfig $config;
 
@@ -16,13 +16,19 @@ class SelectColumnBuilder implements CanExport
 
     public function select(string $column): self
     {
-        $this->config->setColumn($column);
+        $this->config->setName($column);
         return $this;
     }
 
-    public function as(string $uiColumnName): self
+    public function showAs(string $name): self
     {
-        $this->config->setUiColumnName($uiColumnName);
+        $this->config->setUiName($name);
+        return $this;
+    }
+
+    public function useAs(string $alias): self
+    {
+        $this->config->setAlias($alias);
         return $this;
     }
 
@@ -47,12 +53,6 @@ class SelectColumnBuilder implements CanExport
     public function makePhoneLink(): self
     {
         $this->config->setIsPhone(true);
-        return $this;
-    }
-
-    public function setName(?string $name): self
-    {
-        $this->config->setName($name);
         return $this;
     }
 
@@ -101,8 +101,8 @@ class SelectColumnBuilder implements CanExport
 
     public function formatAsDate(): self
     {
-        $column = $this->config->getColumn();
-        $this->config->setColumn("DATE_FORMAT($column, '%d-%m-%Y')");
+        $column = $this->config->getName();
+        $this->config->setName("DATE_FORMAT($column, '%d-%m-%Y')");
         return $this;
     }
 

@@ -67,7 +67,7 @@ class TableBuilder implements CanExport
 
     public function selectColumn(callable $callback): self
     {
-        $builder = new SelectColumnBuilder();
+        $builder = new ColumnBuilder();
         $callback($builder);
         $this->config->setColumns(
             array_merge(
