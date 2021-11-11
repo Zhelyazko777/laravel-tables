@@ -84,13 +84,7 @@ class TableResolver implements TableResolverInterface
                     $column,
                     new ResolvedColumn,
                     [
-                        'name' => function (ColumnConfig $source, ResolvedColumn $destination) {
-                            if (!is_null($source->getAlias())) {
-                                $destination->setName($source->getAlias());
-                            } else {
-                                $destination->setName($source->getName());
-                            }
-                        },
+                        'name' => fn (ColumnConfig $source) => (!is_null($source->getAlias())) ? $source->getAlias() : $source->getName(),
                     ]
                 );
             }
