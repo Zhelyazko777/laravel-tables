@@ -2,6 +2,7 @@
 
 namespace Zhelyazko777\Tables\Resolvers;
 
+use Mockery\Exception;
 use Zhelyazko777\LaravelSimpleMapper\SimpleMapper;
 use Zhelyazko777\Tables\Builders\Models\Abstractions\BaseButtonConfig;
 use Zhelyazko777\Tables\Builders\Models\Abstractions\BaseJoin;
@@ -75,6 +76,10 @@ class TableResolver implements TableResolverInterface
      */
     private function addColumns(ResolvedTable $table, array $columnsConfig): void
     {
+        if (empty($columnsConfig)) {
+            throw new Exception('You should select at least on column from the table.');
+        }
+
         $resolvedColumns = [];
 
         foreach ($columnsConfig as $column)
@@ -100,6 +105,10 @@ class TableResolver implements TableResolverInterface
     private function buildDbQuery(TableConfig $config): Builder
     {
         $mainTable = $config->getMainTable();
+        if (is_null($mainTable) || empty($mainTable)) {
+            throw new Exception('You have to provide a starting db table.');
+        }
+
         $queryBuilder = \DB::table($mainTable);
         $whereExpression = $this->escapeWhere($config->getWhereExpression());
         if (!is_null($whereExpression)) {

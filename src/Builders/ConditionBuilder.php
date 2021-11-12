@@ -15,16 +15,21 @@ class ConditionBuilder implements CanExport
     }
 
     /**
+     * Adds single condition, if called multiple times
+     * it will use only the last condition
      * @param  array<string|null>  $condition
      * @return $this
      */
     public function singleCondition(array $condition): self
     {
-        $this->setAnd($condition);
+        $addedConditions = ['and' => [$condition]];
+        $this->config->setConditions($addedConditions);
+
         return $this;
     }
 
     /**
+     * Adds and conditions
      * @param  array<mixed>  $conditions
      * @param  callable|null  $callback
      * @return ConditionBuilder
@@ -32,7 +37,10 @@ class ConditionBuilder implements CanExport
     public function setAnd(array $conditions, ?callable $callback = null): self
     {
         $addedConditions = $this->config->getConditions();
-        $addedConditions['and'] = [];
+        if (!array_key_exists('and', $addedConditions)) {
+            $addedConditions['and'] = [];
+        }
+
         if (is_array($conditions[0])) {
             foreach ($conditions as $condition)
             {
@@ -55,6 +63,7 @@ class ConditionBuilder implements CanExport
     }
 
     /**
+     * Adds or conditions
      * @param  array<mixed>  $conditions
      * @param  callable|null  $callback
      * @return ConditionBuilder
@@ -62,7 +71,10 @@ class ConditionBuilder implements CanExport
     public function setOr(array $conditions, ?callable $callback = null): self
     {
         $addedConditions = $this->config->getConditions();
-        $addedConditions['or'] = [];
+        if (!array_key_exists('or', $addedConditions)) {
+            $addedConditions['or'] = [];
+        }
+
         if (is_array($conditions[0])) {
             foreach ($conditions as $condition)
             {
@@ -83,6 +95,10 @@ class ConditionBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Exports the configuration
+     * @return ConditionConfig
+     */
     public function export(): ConditionConfig
     {
         return $this->config;

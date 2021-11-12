@@ -17,12 +17,22 @@ class TableBuilder implements CanExport
         $this->config = new TableConfig();
     }
 
+    /**
+     * Sets the table from which th query should start
+     * @param  string  $table
+     * @return $this
+     */
     public function fromDbTable(string $table): self
     {
         $this->config->setMainTable($table);
         return $this;
     }
 
+    /**
+     * Adds button which opens a modal
+     * @param  callable  $callback
+     * @return $this
+     */
     public function addModalButton(callable $callback): self
     {
         $builder = new ModalButtonBuilder();
@@ -37,6 +47,11 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Adds button of type link
+     * @param  callable  $callback
+     * @return $this
+     */
     public function addLinkButton(callable $callback): self
     {
         $builder = new LinkButtonBuilder();
@@ -51,6 +66,12 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Adds simple text button(useful when you need just to add
+     * JS event listener on it)
+     * @param  callable  $callback
+     * @return $this
+     */
     public function addTextButton(callable $callback): self
     {
         $builder = new TextButtonBuilder();
@@ -65,6 +86,11 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Builds a column selection
+     * @param  callable  $callback
+     * @return $this
+     */
     public function selectColumn(callable $callback): self
     {
         $builder = new ColumnBuilder();
@@ -79,6 +105,14 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Adds INNER JOIN to the query
+     * @param  string  $table
+     * @param  string  $firstOperand
+     * @param  string  $operator
+     * @param  string  $secondOperand
+     * @return $this
+     */
     public function addJoin(string $table, string $firstOperand, string $operator, string $secondOperand): self
     {
         $this->config->setJoins(
@@ -91,6 +125,14 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Adds LEFT JOIN to the query
+     * @param  string  $table
+     * @param  string  $firstOperand
+     * @param  string  $operator
+     * @param  string  $secondOperand
+     * @return $this
+     */
     public function addLeftJoin(string $table, string $firstOperand, string $operator, string $secondOperand): self
     {
         $this->config->setJoins(
@@ -103,6 +145,12 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Adds order by statement to the query
+     * @param  string  $orderBy
+     * @param  array  $bindings
+     * @return $this
+     */
     public function orderBy(string $orderBy, array $bindings = []): self
     {
         $this->config->setOrderByBindings($bindings);
@@ -110,24 +158,45 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Makes the rows expandable
+     * (useful when hiding columns on mobile)
+     * @return $this
+     */
     public function makeExpandable(): self
     {
         $this->config->setIsExpandable(true);
         return $this;
     }
 
-    public function ifNoDataShow(string $nodDataMessage): self
+    /**
+     * Adds text to show when there are no items
+     * @param  string  $noDataMessage
+     * @return $this
+     */
+    public function ifNoDataShow(string $noDataMessage): self
     {
-        $this->config->setNoItemsMessage($nodDataMessage);
+        $this->config->setNoItemsMessage($noDataMessage);
         return $this;
     }
 
+    /**
+     * Paginates the table
+     * @param  int  $itemsPerPage
+     * @return $this
+     */
     public function paginate(int $itemsPerPage): self
     {
         $this->config->setItemsPerPage($itemsPerPage);
         return $this;
     }
 
+    /**
+     * Adds WHERE statement to the query
+     * @param  string  $whereExpression
+     * @param  array  $bindings
+     * @return $this
+     */
     public function filter(string $whereExpression, array $bindings = []): self
     {
         $this->config->setWhereExpression($whereExpression);
@@ -136,6 +205,7 @@ class TableBuilder implements CanExport
     }
 
     /**
+     * Includes soft deleted records
      * @param  array<string>  $columns
      * @return $this
      */
@@ -151,6 +221,10 @@ class TableBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Exports table config
+     * @return TableConfig
+     */
     public function export(): TableConfig
     {
         return $this->config;

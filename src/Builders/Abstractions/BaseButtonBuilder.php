@@ -32,24 +32,45 @@ abstract class BaseButtonBuilder implements CanExport
         return $this;
     }
 
+    /**
+     * Adds text for the button
+     * @param  string  $text
+     * @return $this
+     */
     public function withText(string $text): static
     {
         $this->config->setText($text);
         return $this;
     }
 
+    /**
+     * Adds fontawesome icon to the button
+     * (You should load fontawesome before using it here)
+     * @param  string  $icon
+     * @return $this
+     */
     public function withIcon(string $icon): static
     {
         $this->config->setIcon($icon);
         return $this;
     }
 
+    /**
+     * Adds tooltip to the button
+     * @param  string  $tooltip
+     * @return $this
+     */
     public function withTooltip(string $tooltip): static
     {
         $this->config->setTooltip($tooltip);
         return  $this;
     }
 
+    /**
+     * Adds classes to the button
+     * @param  string  $class
+     * @return $this
+     */
     public function withClass(string $class): static
     {
         $this->config->setClass($class);
@@ -57,6 +78,7 @@ abstract class BaseButtonBuilder implements CanExport
     }
 
     /**
+     * Builds disable button rules
      * @param  callable|array<mixed> $condition
      * @return static
      */
@@ -70,12 +92,19 @@ abstract class BaseButtonBuilder implements CanExport
         }
 
         $this->config->setDisableConditions(
-            $builder->export()->getConditions()
+            array_merge_recursive(
+                $this->config->getDisableConditions(),
+                $builder->export()->getConditions(),
+            ),
         );
 
         return $this;
     }
 
+    /**
+     * Exports the config
+     * @return BaseButtonConfig
+     */
     public function export(): BaseButtonConfig
     {
         return $this->config;
