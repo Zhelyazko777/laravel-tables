@@ -25,11 +25,12 @@ class TestCase extends BaseTestCase
         ]);
 
         Pet::insert([
-            ['name' => 'Max', 'age' => 20, 'pet_type_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Richard', 'age' => 1, 'pet_type_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Vivi', 'age' => 10, 'pet_type_id' => 3, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Mani', 'age' => 4, 'pet_type_id' => 2, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Bob', 'age' => 8, 'pet_type_id' => 2, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Max', 'age' => 20, 'pet_type_id' => 1, 'created_at' => now(), 'updated_at' => now(), 'deleted_at' => null],
+            ['name' => 'Richard', 'age' => 1, 'pet_type_id' => 1, 'created_at' => now(), 'updated_at' => now(), 'deleted_at' => null],
+            ['name' => 'Vivi', 'age' => 10, 'pet_type_id' => 3, 'created_at' => now(), 'updated_at' => now(), 'deleted_at' => null],
+            ['name' => 'Mani', 'age' => 4, 'pet_type_id' => 2, 'created_at' => now(), 'updated_at' => now(), 'deleted_at' => null],
+            ['name' => 'Bob', 'age' => 8, 'pet_type_id' => 2, 'created_at' => now(), 'updated_at' => now(), 'deleted_at' => null],
+            ['name' => 'Rambo', 'age' => 1, 'pet_type_id' => 1, 'created_at' => now(), 'updated_at' => now(), 'deleted_at' => now()],
         ]);
 
         Toy::insert([
