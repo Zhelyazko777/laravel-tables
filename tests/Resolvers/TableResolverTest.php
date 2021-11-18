@@ -2,11 +2,13 @@
 
 namespace Zhelyazko777\Tables\Tests\Resolvers;
 
-use Zhelyazko777\Tables\Builders\ColumnBuilder;
-use Zhelyazko777\Tables\Builders\LinkButtonBuilder;
-use Zhelyazko777\Tables\Builders\ModalButtonBuilder;
-use Zhelyazko777\Tables\Builders\TableBuilder;
-use Zhelyazko777\Tables\Builders\TextButtonBuilder;
+use Zhelyazko777\Tables\Builders\Models\ColumnConfig;
+use Zhelyazko777\Tables\Builders\Models\InnerJoin;
+use Zhelyazko777\Tables\Builders\Models\LeftJoin;
+use Zhelyazko777\Tables\Builders\Models\LinkButtonConfig;
+use Zhelyazko777\Tables\Builders\Models\ModalButtonConfig;
+use Zhelyazko777\Tables\Builders\Models\TableConfig;
+use Zhelyazko777\Tables\Builders\Models\TextButtonConfig;
 use Zhelyazko777\Tables\Resolvers\Models\ResolvedLinkButton;
 use Zhelyazko777\Tables\Resolvers\Models\ResolvedModalButton;
 use Zhelyazko777\Tables\Resolvers\Models\ResolvedTextButton;
@@ -15,7 +17,6 @@ use Zhelyazko777\Tables\Tests\TestCase;
 
 class TableResolverTest extends TestCase
 {
-    // TODO:: Add tests about the rows fetched
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,9 +27,8 @@ class TableResolverTest extends TestCase
     {
         $noItemsMsg = 'Test';
         $config = $this
-            ->getBasicBuilder()
-            ->ifNoDataShow($noItemsMsg)
-            ->export();
+            ->getBasicConfig()
+            ->setNoItemsMessage($noItemsMsg);
 
         $table = (new TableResolver)->resolve($config);
 
@@ -37,9 +37,7 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_should_fetch_correct_results_from_db()
     {
-        $config = $this
-            ->getBasicBuilder()
-            ->export();
+        $config = $this->getBasicConfig();
 
         $rows = (new TableResolver)->resolve($config)->getRows();
 
@@ -54,9 +52,9 @@ class TableResolverTest extends TestCase
     public function test_resolve_with_fiter_should_fetch_correct_results()
     {
         $config = $this
-            ->getBasicBuilder()
-            ->filter('pets.name != :name', ['name' => 'Bob'])
-            ->export();
+            ->getBasicConfig()
+            ->setWhereExpression('pets.name != :name')
+            ->setWhereBindings( ['name' => 'Bob']);
 
         $rows = (new TableResolver)->resolve($config)->getRows();
 
@@ -69,11 +67,21 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_with_join_should_fetch_correct_results()
     {
-        $config = $this
-            ->getBasicBuilder()
-            ->selectColumn(fn (ColumnBuilder $b) => $b->select('pet_types.name')->showAs('Type'))
-            ->addJoin('pet_types', 'pets.pet_type_id', '=', 'pet_types.id')
-            ->export();
+        $basicConfig = $this->getBasicConfig();
+        $config = $basicConfig
+            ->setColumns(
+                array_merge(
+                    $basicConfig->getColumns(),
+                    [(new ColumnConfig)->setName('pet_types.name')->setUiName('Type')]
+                )
+            )
+            ->setJoins([
+                (new InnerJoin)
+                    ->setTable('pet_types')
+                    ->setFirstOperand('pets.pet_type_id')
+                    ->setOperator('=')
+                    ->setSecondOperand('pet_types.id'),
+            ]);
 
         $rows = (new TableResolver)->resolve($config)->getRows();
 
@@ -87,11 +95,22 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_with_left_join_should_fetch_correct_results()
     {
+        $basicConfig = $this->getBasicConfig();
         $config = $this
-            ->getBasicBuilder()
-            ->selectColumn(fn (ColumnBuilder $b) => $b->select('toys.name')->showAs('Toy'))
-            ->addLeftJoin('toys', 'pets.id', '=', 'toys.pet_id')
-            ->export();
+            ->getBasicConfig()
+            ->setColumns(
+                array_merge(
+                    $basicConfig->getColumns(),
+                    [(new ColumnConfig)->setName('toys.name')->setUiName('Toy')]
+                )
+            )
+            ->setJoins([
+                (new LeftJoin)
+                    ->setTable('toys')
+                    ->setFirstOperand('pets.id')
+                    ->setOperator('=')
+                    ->setSecondOperand('toys.pet_id'),
+            ]);
 
         $rows = (new TableResolver)->resolve($config)->getRows();
 
@@ -106,9 +125,8 @@ class TableResolverTest extends TestCase
     public function test_resolve_with_order_by_should_return_correct_results()
     {
         $config = $this
-            ->getBasicBuilder()
-            ->orderBy('pets.name ASC')
-            ->export();
+            ->getBasicConfig()
+            ->setOrderBy('pets.name ASC');
 
         $rows = (new TableResolver)->resolve($config)->getRows();
 
@@ -122,9 +140,8 @@ class TableResolverTest extends TestCase
     public function test_resolve_with_paging_should_return_correct_results()
     {
         $config = $this
-            ->getBasicBuilder()
-            ->paginate(1)
-            ->export();
+            ->getBasicConfig()
+            ->setItemsPerPage(1);
 
         $paginator = (new TableResolver)->resolve($config)->getPaginator();
 
@@ -135,9 +152,8 @@ class TableResolverTest extends TestCase
     public function test_resolve_with_including_sopft_deleted_items_should_return_correct_results()
     {
         $config = $this
-            ->getBasicBuilder()
-            ->includeTrashed(['pets'])
-            ->export();
+            ->getBasicConfig()
+            ->setIncludedTrashedTables(['pets']);
 
         $rows = (new TableResolver)->resolve($config)->getRows();
 
@@ -147,9 +163,8 @@ class TableResolverTest extends TestCase
     public function test_resolve_should_make_table_expandable_if_method_called()
     {
         $config = $this
-            ->getBasicBuilder()
-            ->makeExpandable()
-            ->export();
+            ->getBasicConfig()
+            ->setIsExpandable(true);
 
         $table = (new TableResolver)->resolve($config);
 
@@ -158,9 +173,7 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_should_add_correct_column_ui_titles()
     {
-        $config = $this
-            ->getBasicBuilder()
-            ->export();
+        $config = $this->getBasicConfig();
 
         $table = (new TableResolver)->resolve($config);
 
@@ -169,9 +182,7 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_should_add_correct_column_name()
     {
-        $config = $this
-            ->getBasicBuilder()
-            ->export();
+        $config = $this->getBasicConfig();
 
         $table = (new TableResolver)->resolve($config);
 
@@ -180,11 +191,15 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_should_add_alias_as_column_name_when_alias_provided()
     {
+        $basicConfig = $this->getBasicConfig();
         $alias = 'age_in_test';
-        $config = $this
-            ->getBasicBuilder()
-            ->selectColumn(fn (ColumnBuilder $b) => $b->select('age')->useAs($alias))
-            ->export();
+        $config = $basicConfig
+            ->setColumns(
+                array_merge(
+                    $basicConfig->getColumns(),
+                    [(new ColumnConfig)->setName('age')->setAlias($alias)]
+                )
+            );
 
         $table = (new TableResolver)->resolve($config);
 
@@ -193,9 +208,7 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_should_add_link_button_correctly()
     {
-        $config = $this
-            ->getBasicBuilder()
-            ->export();
+        $config = $this->getBasicConfig();
 
         $table = (new TableResolver)->resolve($config);
 
@@ -211,9 +224,7 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_should_add_modal_button_correctly()
     {
-        $config = $this
-            ->getBasicBuilder()
-            ->export();
+        $config = $this->getBasicConfig();
 
         $table = (new TableResolver)->resolve($config);
 
@@ -229,9 +240,7 @@ class TableResolverTest extends TestCase
 
     public function test_resolve_should_add_text_button_correctly()
     {
-        $config = $this
-            ->getBasicBuilder()
-            ->export();
+        $config = $this->getBasicConfig();
 
         $table = (new TableResolver)->resolve($config);
 
@@ -248,20 +257,23 @@ class TableResolverTest extends TestCase
     {
         $this->expectExceptionMessage('You should select at least on column from the table.');
 
-        $builder = new TableBuilder();
-        $config = $builder->export();
+        $config = new TableConfig;
         $resolver = new TableResolver;
 
         $resolver->resolve($config);
     }
 
-    private function getBasicBuilder(): TableBuilder
+    private function getBasicConfig(): TableConfig
     {
-        return (new TableBuilder())
-            ->fromDbTable('pets')
-            ->selectColumn(fn (ColumnBuilder $c) => $c->select('pets.name')->showAs('Name'))
-            ->addTextButton(fn (TextButtonBuilder $b) => $b)
-            ->addLinkButton(fn (LinkButtonBuilder $b) => $b)
-            ->addModalButton(fn (ModalButtonBuilder $b) => $b);
+        return (new TableConfig())
+            ->setMainTable('pets')
+            ->setColumns([
+                (new ColumnConfig)->setName('pets.name')->setUiName('Name'),
+            ])
+            ->setButtons([
+                (new TextButtonConfig),
+                (new LinkButtonConfig),
+                (new ModalButtonConfig),
+            ]);
     }
 }
