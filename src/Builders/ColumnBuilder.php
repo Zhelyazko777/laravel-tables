@@ -151,6 +151,28 @@ class ColumnBuilder implements CanExport
     }
 
     /**
+     * Adds suffix to the table column value
+     * @param  string  $suffix
+     * @return $this
+     */
+    public function withSuffix(string $suffix): self
+    {
+        $this->config->setSuffix($suffix);
+        return $this;
+    }
+
+    /**
+     * Adds prefix to the table column value
+     * @param  string  $prefix
+     * @return $this
+     */
+    public function withPrefix(string $prefix): self
+    {
+        $this->config->setPrefix($prefix);
+        return $this;
+    }
+
+    /**
      * Exports the config
      * @return ColumnConfig
      */

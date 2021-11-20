@@ -164,4 +164,24 @@ class ColumnBuilderTest extends TestCase
 
         $this->assertEquals("DATE_FORMAT($columnName, '%d-%m-%Y')", $builder->export()->getName());
     }
+
+    public function test_with_suffix_should_add_sufix_to_column()
+    {
+        $suffix = '%';
+        $builder = new ColumnBuilder();
+
+        $builder->withSuffix($suffix);
+
+        $this->assertEquals($suffix, $builder->export()->getSuffix());
+    }
+
+    public function test_with_prefix_should_add_sufix_to_column()
+    {
+        $prefix = '%';
+        $builder = new ColumnBuilder();
+
+        $builder->withPrefix($prefix);
+
+        $this->assertEquals($prefix, $builder->export()->getPrefix());
+    }
 }

@@ -36,6 +36,46 @@ class ColumnConfig
 
     private bool $showTooltipIcon = false;
 
+    private ?string $suffix = null;
+
+    private ?string $prefix = null;
+
+    /**
+     * @return string|null
+     */
+    public function getSuffix(): ?string
+    {
+        return $this->suffix;
+    }
+
+    /**
+     * @param  string|null  $suffix
+     * @return static
+     */
+    public function setSuffix(?string $suffix): static
+    {
+        $this->suffix = $suffix;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param  string|null  $prefix
+     * @return static
+     */
+    public function setPrefix(?string $prefix): static
+    {
+        $this->prefix = $prefix;
+        return $this;
+    }
+
     /**
      * @return string
      */
