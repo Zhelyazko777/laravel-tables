@@ -36,41 +36,41 @@ class ResolvedColumn implements \JsonSerializable
 
     private bool $showTooltipIcon = false;
 
-    private ?string $suffix = null;
+    private string $suffix = '';
 
-    private ?string $prefix = null;
+    private string $prefix = '';
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getSuffix(): ?string
+    public function getSuffix(): string
     {
         return $this->suffix;
     }
 
     /**
-     * @param  string|null  $suffix
+     * @param  string  $suffix
      * @return static
      */
-    public function setSuffix(?string $suffix): static
+    public function setSuffix(string $suffix): static
     {
         $this->suffix = $suffix;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getPrefix(): ?string
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
 
     /**
-     * @param  string|null  $prefix
+     * @param  string  $prefix
      * @return static
      */
-    public function setPrefix(?string $prefix): static
+    public function setPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
         return $this;
