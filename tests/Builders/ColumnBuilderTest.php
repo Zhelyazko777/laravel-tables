@@ -175,6 +175,13 @@ class ColumnBuilderTest extends TestCase
         $this->assertEquals($suffix, $builder->export()->getSuffix());
     }
 
+    public function test_suffix_should_be_empty_string_if_no_prefix_passed_to_config()
+    {
+        $builder = new ColumnBuilder();
+
+        $this->assertEquals('', $builder->export()->getSuffix());
+    }
+
     public function test_with_prefix_should_add_sufix_to_column()
     {
         $prefix = '%';
@@ -183,5 +190,12 @@ class ColumnBuilderTest extends TestCase
         $builder->withPrefix($prefix);
 
         $this->assertEquals($prefix, $builder->export()->getPrefix());
+    }
+
+    public function test_prefix_should_be_empty_string_if_no_prefix_passed_to_config()
+    {
+        $builder = new ColumnBuilder();
+
+        $this->assertEquals('', $builder->export()->getPrefix());
     }
 }
