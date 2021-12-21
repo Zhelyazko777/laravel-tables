@@ -84,15 +84,13 @@ class TableResolver implements TableResolverInterface
 
         foreach ($columnsConfig as $column)
         {
-            if (!$column->getIsHidden()) {
-                $resolvedColumns[] = SimpleMapper::map(
-                    $column,
-                    new ResolvedColumn,
-                    [
-                        'name' => fn (ColumnConfig $source) => (!is_null($source->getAlias())) ? $source->getAlias() : $source->getName(),
-                    ]
-                );
-            }
+            $resolvedColumns[] = SimpleMapper::map(
+                $column,
+                new ResolvedColumn,
+                [
+                    'name' => fn (ColumnConfig $source) => (!is_null($source->getAlias())) ? $source->getAlias() : $source->getName(),
+                ]
+            );
         }
 
         $table->setColumns($resolvedColumns);
